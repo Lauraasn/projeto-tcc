@@ -6,9 +6,11 @@ function App() {
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
+        
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          Click the "Connect" button to connect with NodeJS
         </p>
+
         <a
           className="App-link"
           href="https://reactjs.org"
@@ -17,6 +19,11 @@ function App() {
         >
           Learn React
         </a>
+
+        <form action="../../post" method="post" className="form">
+          <button type="submit">Connect</button>
+        </form>
+
       </header>
     </div>
   );
