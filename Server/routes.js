@@ -10,6 +10,9 @@ clientsRoutes.post("/clientes", (request, response) => {
     return response.status(201).json(allClients);
 });
 //R
+clientsRoutes.get("/clientes", (request, response) => {
+    return response.status(200).json(allClients);
+});
 //U
 //D
 
