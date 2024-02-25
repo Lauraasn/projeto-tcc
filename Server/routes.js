@@ -1,12 +1,13 @@
 const express = require("express");
+const pool = require('./db');
 
-const allClients = [{ nome: "Alex", status: false}];
+const allClients = [{ nome: "Alex", idade: 32, sexo: "M", diagnostico: "", observacao: ""}];
 const clientsRoutes = express.Router();
 
 //C
 clientsRoutes.post("/clientes", (request, response) => {
-    const {name} = request.body;
-    allClients.push({name, status: false});
+    const {name, age, sex, diagnostic, observation} = request.body;
+    allClients.push({name, age, sex, diagnostic, observation});
     return response.status(201).json(allClients);
 });
 //R
