@@ -1,8 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
+import { Button, Collapse, Form, FormGroup, FormLabel, FormControl, Col, Row, Alert } from 'react-bootstrap'
 
 function App() {
   const [data, setData] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+  const [formData, setFormData] = useState({ nome: '', idade: '', sexo: '', diagnostico: '', observacao: '' });
+  const [showAlert, setShowAlert] = useState(false);
 
   //useEffect(() => {}, []);
   useEffect(() => {
@@ -10,8 +14,8 @@ function App() {
       try {
         const response = await axios.get('/clientes');
         setData(response.data);
-      } catch (err) {
-        console.error('Erro ao coletar dados:', err);
+      } catch (error) {
+        console.error('Erro ao coletar dados:', error);
       }
     };
 
@@ -19,36 +23,129 @@ function App() {
 
   }, []);
 
+  const toggleForm = () => {
+    setShowForm(!showForm);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value});
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('/clientes', formData);
+      console.log('Dados enviados com sucesso:', response.data);
+      setFormData({ nome: '', idade: '', sexo: '', diagnostico: '', observacao: '' });
+      setShowAlert(true);
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+    } catch (error) {
+      console.error('Erro ao enviar dados:', error);
+    }
+  };
+
   return (
 
     <div className="App">
-      <h1>Página principal</h1>
-      <p>É a página que vai ter o CRUD em si</p>
+      <div className='container m-2 p-2'>
+        {showAlert && (
+          <Alert variant='success' className="mt-1">
+            Novo cliente enviado com sucesso!
+          </Alert>
+        )}
 
-      <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">Ordem</th>
-            <th scope="col">Nome</th>
-            <th scope="col">Idade</th>
-            <th scope="col">Sexo</th>
-            <th scope="col">Diagnóstico</th>
-            <th scope="col">Observação</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((item) => (
-            <tr key={item.id}>
-              <th scope="row" key={item.id}>{item.id}</th>
-              <td key={item.id}>{item.nome}</td>
-              <td key={item.id}>{item.idade}</td>
-              <td key={item.id}>{item.sexo}</td>
-              <td key={item.id}>{item.diagnostico}</td>
-              <td key={item.id}>{item.observacao}</td>
+        <h1>Página principal</h1>
+        <p>É a página que vai ter o CRUD em si</p>
+
+        <Button onClick={toggleForm} variant="primary" className='my-3'>
+          {showForm ? 'Cancelar' : 'Novo cliente'}
+        </Button>
+
+        <Collapse in={showForm}>
+          <div>
+            <Form className='my-3' onSubmit={handleSubmit}>
+              <FormGroup as={Row} controlId="formHorizontalText">
+                <FormLabel column sm={2}>
+                  Nome
+                </FormLabel>
+                <Col sm={10}>
+                  <FormControl type="text" name="nome" value={formData.nome} onChange={handleInputChange} placeholder="Fulano da Silva"/>
+                </Col>
+              </FormGroup>
+
+              <FormGroup as={Row} controlId="formHorizontalText">
+                <FormLabel column sm={2}>
+                  Idade
+                </FormLabel>
+                <Col sm={10}>
+                  <FormControl type="number" name="idade" value={formData.idade} onChange={handleInputChange} placeholder="30"/>
+                </Col>
+              </FormGroup>
+
+              <FormGroup as={Row} controlId="formHorizontalText">
+                <FormLabel column sm={2}>
+                  Sexo
+                </FormLabel>
+                <Col sm={10}>
+                  <FormControl type="text" name="sexo" value={formData.sexo} onChange={handleInputChange} placeholder="M"/>
+                </Col>
+              </FormGroup>
+
+              <FormGroup as={Row} controlId="formHorizontalText">
+                <FormLabel column sm={2}>
+                  Diagnóstico
+                </FormLabel>
+                <Col sm={10}>
+                  <FormControl type="text" name="diagnostico" value={formData.diagnostico} onChange={handleInputChange}/>
+                </Col>
+              </FormGroup>
+
+              <FormGroup as={Row} controlId="formHorizontalText">
+                <FormLabel column sm={2}>
+                  Observação
+                </FormLabel>
+                <Col sm={10}>
+                  <FormControl type="text" name="observacao" value={formData.observacao} onChange={handleInputChange} placeholder=""/>
+                </Col>
+              </FormGroup>
+
+              <FormGroup as={Row}>
+                <Col sm={{span: 10, offset: 2}}>
+                  <Button className="mt-2" type="submit">Enviar</Button>
+                </Col>
+              </FormGroup>
+            </Form>
+          </div>
+        </Collapse>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Nome</th>
+              <th scope="col">Idade</th>
+              <th scope="col">Sexo</th>
+              <th scope="col">Diagnóstico</th>
+              <th scope="col">Observação</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {data.map((item) => (
+              <tr key={item.id}>
+                <th scope="row" key={item.id}>{item.id}</th>
+                <td key={item.id}>{item.nome}</td>
+                <td key={item.id}>{item.idade}</td>
+                <td key={item.id}>{item.sexo}</td>
+                <td key={item.id}>{item.diagnostico}</td>
+                <td key={item.id}>{item.observacao}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
