@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import { Button, Collapse, Form, FormGroup, FormLabel, FormControl, Col, Row, Alert } from 'react-bootstrap'
+import { TrashFill, PencilSquare } from 'react-bootstrap-icons';
 
 function App() {
   const [data, setData] = useState([]);
@@ -121,7 +122,7 @@ function App() {
           </div>
         </Collapse>
 
-        <table class="table">
+        <table class="table table-hover">
           <thead>
             <tr>
               <th scope="col">#</th>
@@ -130,6 +131,7 @@ function App() {
               <th scope="col">Sexo</th>
               <th scope="col">Diagnóstico</th>
               <th scope="col">Observação</th>
+              <th scope="col"></th>
             </tr>
           </thead>
           <tbody>
@@ -141,6 +143,10 @@ function App() {
                 <td key={item.id}>{item.sexo}</td>
                 <td key={item.id}>{item.diagnostico}</td>
                 <td key={item.id}>{item.observacao}</td>
+                <td>
+                  <Button variant='success' className='mx-1'> <PencilSquare /> </Button>
+                  <Button variant='danger' className='mx-1'> <TrashFill /> </Button>
+                </td>
               </tr>
             ))}
           </tbody>
