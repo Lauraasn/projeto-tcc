@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
+import ClientRoutes from './ClientRoutes';
 import axios from 'axios';
-import { Button, Collapse, Form, FormGroup, FormLabel, FormControl, Col, Row, Alert } from 'react-bootstrap'
+import { Button, Collapse, Form, FormGroup, FormLabel, FormControl, Col, Row, Alert, Table } from 'react-bootstrap'
 import { TrashFill, PencilSquare } from 'react-bootstrap-icons';
 
 function App() {
@@ -49,8 +50,12 @@ function App() {
   };
 
   return (
-
     <div className="App">
+
+      <div>
+        <ClientRoutes />
+      </div>
+
       <div className='container m-2 p-2'>
         {showAlert && (
           <Alert variant='success' className="mt-1">
@@ -122,7 +127,7 @@ function App() {
           </div>
         </Collapse>
 
-        <table class="table table-hover">
+        <Table hover>
           <thead>
             <tr>
               <th scope="col">#</th>
@@ -150,7 +155,7 @@ function App() {
               </tr>
             ))}
           </tbody>
-        </table>
+        </Table>
       </div>
     </div>
   );

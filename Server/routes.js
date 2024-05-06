@@ -11,6 +11,18 @@ routes.get("/", (req, res) => {
     res.json("Olá, aqui é o servidor!")
 });
 
+routes.post('/login', (req, res) => {
+    //Login
+})
+
+routes.post('/signin', (req, res) => {
+    //SignIn
+})
+
+routes.post('/crud', (req, res) => {
+    //CRUD
+})
+
 //Create (POST url)
 routes.post("/clientes", async (req, res) => {
     try{
