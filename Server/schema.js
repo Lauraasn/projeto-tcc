@@ -12,6 +12,12 @@ async function createTables(){
         observacao VARCHAR(255)
     )`);
 
+    await pool.query(`CREATE TABLE IF NOT EXISTS Usuarios (
+        id SERIAL PRIMARY KEY,
+        email VARCHAR(255) NOT NULL,
+        senha VARCHAR(255) NOT NULL
+    )`);
+
     console.log("Tabelas Criadas");
 };
 
