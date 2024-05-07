@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { Button, Form, FormGroup, FormControl, FormLabel, Col, Row } from 'react-bootstrap';
 
 const Login = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('');
+    const [senha, setSenha] = useState('');
     const [error, setError] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('/login', {username, password});
+            const response = await axios.post('/login', {email, senha});
             console.log('Logado com sucesso:', response.data);
         } catch (error) {
             setError('Username ou senha inválida');
@@ -22,11 +23,30 @@ const Login = () => {
             <h1>Página de Login</h1>
             {error && <p>{error}</p>}
 
-            <form onSubmit={handleSubmit}>
-                <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
-                <input type="password" placeholder="Senha" value={password} onChange={(e) => setPassword(e.target.value)} />
-                <button type="submit">Login</button>
-            </form>
+            <Form onSubmit={handleSubmit}>
+                <FormGroup as={Row} controlId="formHorizontalText">
+                    <FormLabel column sm={2}>
+                        E-mail
+                    </FormLabel>
+                    <Col sm={10}>
+                        <FormControl type="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="exemplo@email.com"/>
+                    </Col>
+                </FormGroup>
+
+                <FormGroup as={Row} controlId="formHorizontalText">
+                    <FormLabel column sm={2}>
+                        Senha
+                    </FormLabel>
+                    <Col sm={10}>
+                        <FormControl type="password" name="senha" value={senha} onChange={(e) => setSenha(e.target.value)} />
+                    </Col>
+                </FormGroup>
+                <FormGroup as={Row}>
+                    <Col sm={{span: 10, offset:2}}>
+                        <Button className="mt-2" type="submit">Entrar</Button>
+                    </Col>
+                </FormGroup>
+            </Form>
         </div>
     );
 };
