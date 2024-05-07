@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import { Button, Collapse, Form, FormGroup, FormLabel, FormControl, Col, Row, Alert, Table } from 'react-bootstrap'
 import { TrashFill, PencilSquare } from 'react-bootstrap-icons';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
     const [data, setData] = useState([]);
@@ -46,6 +47,8 @@ const Home = () => {
             console.error('Erro ao enviar dados:', error);
         }
     };
+
+    const navigate = useNavigate();
 
     return (
         <div className="Home">
@@ -134,7 +137,7 @@ const Home = () => {
                     </thead>
                     <tbody>
                         {data.map((item) => (
-                            <tr key={item.id}>
+                            <tr key={item.id} onClick={() => navigate('/login')}>
                                 <th scope="row" key={item.id}>{item.id}</th>
                                 <td key={item.id}>{item.nome}</td>
                                 <td key={item.id}>{item.idade}</td>
