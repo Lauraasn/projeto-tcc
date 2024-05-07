@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const LoginPage = () => {
+const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -18,8 +18,8 @@ const LoginPage = () => {
     };
 
     return (
-        <div>
-            <h2>Página de Login</h2>
+        <div className="Login">
+            <h1>Página de Login</h1>
             {error && <p>{error}</p>}
 
             <form onSubmit={handleSubmit}>
@@ -31,4 +31,4 @@ const LoginPage = () => {
     );
 };
 
-export default LoginPage;
+export default Login;
