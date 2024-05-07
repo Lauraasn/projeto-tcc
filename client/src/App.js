@@ -6,7 +6,7 @@ function App() {
   return (
     <div className="App">
 
-      <div>
+      <div className="container m-2 p-2">
         <ClientRoutes />
       </div>
       

@@ -36,7 +36,7 @@ const Home = () => {
         e.preventDefault();
         try {
             const response = await axios.post('/clientes', formData);
-            console.log('Dados enviados com sucesso:', response.data);
+            console.log('Dados enviados com sucesso (Client)', response.data);
             setFormData({ nome: '', idade: '', sexo: '', diagnostico: '', observacao: '' });
             setShowAlert(true);
             setTimeout(() => {
@@ -50,7 +50,7 @@ const Home = () => {
     return (
         <div className="Home">
 
-            <div className="container m-2 p-2">
+            <div>
                 {showAlert && (
                     <Alert variant="success" className="mt-1">
                         Novo cliente enviado com sucesso!

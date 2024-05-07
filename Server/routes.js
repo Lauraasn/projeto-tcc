@@ -13,15 +13,24 @@ routes.get("/", (req, res) => {
 
 routes.post('/login', (req, res) => {
     //Login
-})
+});
 
-routes.post('/signin', (req, res) => {
-    //SignIn
-})
-
-routes.post('/crud', (req, res) => {
-    //CRUD
-})
+routes.post('/cadastro', async (req, res) => {
+    try {
+        const {email, senha} = req.body;
+        const insertQuery = `
+        INSERT INTO usuarios (email, senha)
+        VALUES ($1, $2)
+        RETURNING *;
+        `;
+        const values = [email, senha];
+        const result = await pool.query(insertQuery, values);
+        res.status(201).json({ message: 'Cadastrado com sucesso (Server)', data: result.rows[0]});
+    } catch (error) {
+        console.error('Erro ao cadastrar usuário:', error);
+        res.status(500).json({ message: 'Erro no Servidor Interno' });
+    }
+});
 
 //Create (POST url)
 routes.post("/clientes", async (req, res) => {
@@ -34,10 +43,10 @@ routes.post("/clientes", async (req, res) => {
         `;
         const values = [nome, idade, sexo, diagnostico, observacao];
         const result = await pool.query(insertQuery, values);
-        res.status(201).json({ message: 'Dados enviados com sucesso', data: result.rows[0]});
+        res.status(201).json({ message: 'Dados enviados com sucesso (Servidor):', data: result.rows[0] });
     } catch (error) {
         console.error('Erro ao inserir dados:', error);
-        res.status(500).json({message: 'Erro no Servidor Interno'});
+        res.status(500).json({ message: 'Erro no Servidor Interno' });
     }
 });
 
