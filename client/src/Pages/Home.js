@@ -132,12 +132,12 @@ const Home = () => {
                             <th scope="col">Idade</th>
                             <th scope="col">Sexo</th>
                             <th scope="col">Diagnóstico</th>
-                            <th scope="col"></th>
+                            <th scope="col">Observações</th>
                         </tr>
                     </thead>
                     <tbody>
                         {data.map((item) => (
-                            <tr key={item.id} onClick={() => navigate('/login')}>
+                            <tr key={item.id} onClick={() => navigate(`/clientes/${item.id}`)}>
                                 <th scope="row" key={item.id}>{item.id}</th>
                                 <td key={item.id}>{item.nome}</td>
                                 <td key={item.id}>{item.idade}</td>
