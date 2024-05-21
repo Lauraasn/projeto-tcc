@@ -1,5 +1,5 @@
 import React from 'react';
-import ClientRoutes from './Routes/ClientRoutes';
+import AppRoutes from './Routes/AppRoutes';
 
 function App() {
 
@@ -7,7 +7,7 @@ function App() {
     <div className="App">
 
       <div className="container m-2 p-2">
-        <ClientRoutes />
+        <AppRoutes />
       </div>
       
     </div>

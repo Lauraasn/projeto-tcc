@@ -2,6 +2,7 @@ const express = require("express");
 const pool = require('./db');
 const { join } = require("node:path");
 const schema = require('./schema');
+const bcrypt = require('bcrypt');
 
 const routes = express.Router();
 //const filePath = join(__dirname, "schema.sql");
@@ -11,21 +12,39 @@ routes.get("/", (req, res) => {
     res.json("Olá, aqui é o servidor!")
 });
 
-routes.post('/login', (req, res) => {
-    //Login
+routes.post('/login', async (req, res) => {
+    try {
+        const { email, senha } = req.body;
+        const result = await pool.query(`SELECT * FROM usuarios WHERE email = $1`, [email]);
+        if (result.rows.length > 0) {
+            const usuario = result.rows[0];
+            const isMatch = await bcrypt.compare(senha, usuario.senha);
+            if (isMatch) {
+                res.status(200).json({ message: 'Login realizado com sucesso' });
+            } else {
+                res.status(401).json({ error: 'Email ou senha inválido (routes.js)' });
+            }
+        } else {
+            res.status(401).json({ error: 'Email ou senha inválido (routes.js)' });
+        }
+    } catch (error) {
+        console.error('Erro ao logar usuário:', error);
+        res.status(500).json({message: 'Erro no Servidor Interno' });
+    }
 });
 
 routes.post('/cadastro', async (req, res) => {
     try {
-        const {email, senha} = req.body;
+        const { email, senha } = req.body;
+        const senhaHash = await bcrypt.hash(senha, 10);
         const insertQuery = `
         INSERT INTO usuarios (email, senha)
         VALUES ($1, $2)
         RETURNING *;
         `;
-        const values = [email, senha];
+        const values = [email, senhaHash];
         const result = await pool.query(insertQuery, values);
-        res.status(201).json({ message: 'Cadastrado com sucesso (Server)', data: result.rows[0]});
+        res.status(201).json({ message: 'Cadastrado com sucesso (Server)', data: result.rows[0] });
     } catch (error) {
         console.error('Erro ao cadastrar usuário:', error);
         res.status(500).json({ message: 'Erro no Servidor Interno' });
