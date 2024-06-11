@@ -80,7 +80,6 @@ routes.get("/clientes", async (req, res) => {
     }
 });
 
-//Update (PUT url/:id)
 routes.get("/clientes/:id", async (req, res) => {
     const id = req.params.id;
     try {
@@ -91,6 +90,30 @@ routes.get("/clientes/:id", async (req, res) => {
         res.status(500).json({ message: 'Erro no Servidor Interno' });
     }
 });
+
+//Update (PUT url/:id)
+routes.put("/clientes/:id", async (req, res) => {
+    const { id } = req.params;
+    const { nome, idade, sexo, diagnostico, observacao } = req.body;
+    try {
+        const updateQuery = `
+            UPDATE clientes
+            SET nome = $1, idade = $2, sexo = $3, diagnostico = $4, observacao = $5
+            WHERE id = $6
+            RETURNING *;
+            `;
+        const values = [nome, idade, sexo, diagnostico, observacao, id];
+        const result = await pool.query(updateQuery, values);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Cliente não encontrado' });
+        }
+        res.json({ message: 'Atualizado com sucesso', data: result.rows[0] });
+    } catch (error) {
+        console.error('Erro ao atualizar dados do cliente:', error);
+        res.status(500).json({ message: 'Erro no Servidor Interno' });
+    }
+});
+
 
 //Delete (DELETE url/:id)
 routes.delete("/clientes/:id", async (req, res) => {

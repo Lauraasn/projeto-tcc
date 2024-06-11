@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Button, Collapse, Form, FormGroup, FormLabel, FormControl, Col, Row, Alert, Table } from 'react-bootstrap'
 import { TrashFill, PencilSquare } from 'react-bootstrap-icons';
@@ -9,23 +9,30 @@ const Home = () => {
     const [showForm, setShowForm] = useState(false);
     const [formData, setFormData] = useState({ nome: '', idade: '', sexo: '', diagnostico: '', observacao: '' });
     const [showAlert, setShowAlert] = useState(false);
+    const [editMode, setEditMode] = useState(false);
+    const [currentEditId, setCurrentEditId] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get('/clientes');
-                setData(response.data);
-            } catch (error) {
-                console.error('Erro ao coletar dados:', error);
-            }
-        };
-
         fetchData();
-
     }, []);
+
+    const fetchData = async () => {
+        try {
+            const response = await axios.get('/clientes');
+            setData(response.data);
+        } catch (error) {
+            console.error('Erro ao coletar dados:', error);
+        }
+    };
 
     const toggleForm = () => {
         setShowForm(!showForm);
+        if (editMode) {
+            setEditMode(false);
+            setCurrentEditId(null);
+            setFormData({ nome: '', idade: '', sexo: '', diagnostico: '', observacao: '' });
+        }
     };
 
     const handleInputChange = (e) => {
@@ -35,20 +42,33 @@ const Home = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const response = await axios.post('/clientes', formData);
-            console.log('Dados enviados com sucesso (Client)', response.data);
-            setFormData({ nome: '', idade: '', sexo: '', diagnostico: '', observacao: '' });
-            setShowAlert(true);
-            setTimeout(() => {
-                window.location.reload();
-            }, 1500);
-        } catch (error) {
-            console.error('Erro ao enviar dados:', error);
+        if (editMode) {
+            try {
+                const response = await axios.put(`/clientes/${currentEditId}`, formData);
+                console.log('Dados atualizados com sucesso (Client)', response.data);
+                setEditMode(false);
+                setCurrentEditId(null);
+            } catch (error) {
+                console.error('Erro ao atualizar dados:', error);
+            }
+        } else {
+            try {
+                const response = await axios.post('/clientes', formData);
+                console.log('Dados enviados com sucesso (Client)', response.data);
+            } catch (error) {
+                console.error('Erro ao enviar dados:', error);
+            }
         }
+        setFormData({ nome: '', idade: '', sexo: '', diagnostico: '', observacao: '' });
+        setShowAlert(true);
+        setTimeout(() => {
+            setShowAlert(false);
+        }, 1500);
+        setShowForm(false);
+        fetchData();
     };
 
-    const handleDeleteSubmit = async (id, e) => {
+    const handleDelete = async (id, e) => {
         e.stopPropagation();
         try {
             const response = await axios.delete(`/clientes/${id}`);
@@ -59,7 +79,13 @@ const Home = () => {
         }
     };
 
-    const navigate = useNavigate();
+    const handleEdit = async (item, e) => {
+        e.stopPropagation();
+        setFormData(item);
+        setShowForm(true);
+        setEditMode(true);
+        setCurrentEditId(item.id);
+    };
 
     return (
         <div className="Home">
@@ -67,7 +93,7 @@ const Home = () => {
             <div>
                 {showAlert && (
                     <Alert variant="success" className="mt-1">
-                        Novo cliente enviado com sucesso!
+                        { editMode ? 'Cliente atualizado com sucesso!' : 'Novo cliente enviado com sucesso!' }
                     </Alert>
                 )}
 
@@ -128,7 +154,7 @@ const Home = () => {
 
                             <FormGroup as={Row}>
                                 <Col sm={{span: 10, offset: 2}}>
-                                    <Button className="mt-2" type="submit">Enviar</Button>
+                                    <Button className="mt-2" type="submit">{editMode ? 'Atualizar' : 'Enviar'}</Button>
                                 </Col>
                             </FormGroup>
                         </Form>
@@ -157,8 +183,8 @@ const Home = () => {
                                 <td>{item.diagnostico}</td>
                                 <td>{item.observacao}</td>
                                 <td>
-                                    <Button variant="success" className="mx-1"> <PencilSquare /> </Button>
-                                    <Button variant="danger" className="mx-1" onClick={(e) => handleDeleteSubmit(item.id, e)}> <TrashFill /> </Button>
+                                    <Button variant="success" className="mx-1" onClick={(e) => handleEdit(item, e)}> <PencilSquare /> </Button>
+                                    <Button variant="danger" className="mx-1" onClick={(e) => handleDelete(item.id, e)}> <TrashFill /> </Button>
                                 </td>
                             </tr>
                         ))}
