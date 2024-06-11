@@ -48,6 +48,17 @@ const Home = () => {
         }
     };
 
+    const handleDeleteSubmit = async (id, e) => {
+        e.stopPropagation();
+        try {
+            const response = await axios.delete(`/clientes/${id}`);
+            console.log('Cliente deletado com sucesso', response.data);
+            setData(data.filter(item => item.id !== id));
+        } catch (error) {
+            console.error('Erro ao deletar cliente:', error);
+        }
+    };
+
     const navigate = useNavigate();
 
     return (
@@ -127,26 +138,27 @@ const Home = () => {
                 <Table hover>
                     <thead>
                         <tr>
-                            <th scope="col">#</th>
+                            <th scope="col"></th>
                             <th scope="col">Nome</th>
                             <th scope="col">Idade</th>
                             <th scope="col">Sexo</th>
                             <th scope="col">Diagnóstico</th>
                             <th scope="col">Observações</th>
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
                         {data.map((item) => (
                             <tr key={item.id} onClick={() => navigate(`/clientes/${item.id}`)}>
-                                <th scope="row" key={item.id}>{item.id}</th>
-                                <td key={item.id}>{item.nome}</td>
-                                <td key={item.id}>{item.idade}</td>
-                                <td key={item.id}>{item.sexo}</td>
-                                <td key={item.id}>{item.diagnostico}</td>
-                                <td key={item.id}>{item.observacao}</td>
+                                <th scope="row"></th>
+                                <td>{item.nome}</td>
+                                <td>{item.idade}</td>
+                                <td>{item.sexo}</td>
+                                <td>{item.diagnostico}</td>
+                                <td>{item.observacao}</td>
                                 <td>
                                     <Button variant="success" className="mx-1"> <PencilSquare /> </Button>
-                                    <Button variant="danger" className="mx-1"> <TrashFill /> </Button>
+                                    <Button variant="danger" className="mx-1" onClick={(e) => handleDeleteSubmit(item.id, e)}> <TrashFill /> </Button>
                                 </td>
                             </tr>
                         ))}

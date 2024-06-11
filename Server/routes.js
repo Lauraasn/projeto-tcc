@@ -29,7 +29,7 @@ routes.post('/login', async (req, res) => {
         }
     } catch (error) {
         console.error('Erro ao logar usuário:', error);
-        res.status(500).json({message: 'Erro no Servidor Interno' });
+        res.status(500).json({ message: 'Erro no Servidor Interno' });
     }
 });
 
@@ -76,7 +76,7 @@ routes.get("/clientes", async (req, res) => {
         res.json(rows);
     } catch (error) {
         console.error('Erro ao coletar dados do banco de dados:', error);
-        res.status(500).json({message: 'Erro no Servidor Interno'});
+        res.status(500).json({ message: 'Erro no Servidor Interno' });
     }
 });
 
@@ -88,9 +88,21 @@ routes.get("/clientes/:id", async (req, res) => {
         res.json(result.rows[0]);
     } catch (error) {
         console.error('Erro ao coletar dados de um cliente do banco de dados:', error);
-        res.status(500).json({message: 'Erro no Servidor Interno'});
+        res.status(500).json({ message: 'Erro no Servidor Interno' });
     }
 });
+
 //Delete (DELETE url/:id)
+routes.delete("/clientes/:id", async (req, res) => {
+    const id = req.params.id;
+    try {
+        const deleteQuery = `DELETE FROM clientes WHERE id = $1`;
+        await pool.query(deleteQuery, [id]);
+        res.json({ message: 'Deletado com sucesso' });
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ message: 'Erro no Servidor Interno' });
+    }
+})
 
 module.exports = routes;
